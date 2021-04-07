@@ -22,26 +22,30 @@ class Prettifier:
             self.hashcat = kwargs["no_hashcat"]
 
     def greppable_output(self, objs: List):
-        logger.trace("Greppable output")
-        logger.trace(objs)
+        logger.debug("Greppable output")
+        logger.debug(f"Objects is {objs}")
         """
         takes the prototypes and turns it into json
         returns the json
 
         Doesn't print it, it prints in main
         """
+        return json.dumps(self.turn_hash_objs_into_dict(objs), indent=2)
+
+    def turn_hash_objs_into_dict(self, objs: List):
+        print(f"objs is {objs}")
         outputs_as_dict = {}
-        for i in objs:
-            logger.trace(i)
-            outputs_as_dict.update(i.hash_obj)
-        logger.info("Returning from greppable output.")
-        return json.dumps(outputs_as_dict, indent=2)
+
+        for y in objs:
+            outputs_as_dict.update(y.hash_obj)
+            logger.debug(f"Output_as_dicts is now {outputs_as_dict}")
+        return outputs_as_dict
 
     def pretty_print(self, objs):
         logger.trace("In pretty printing")
         """
         prints it prettily in the format:
-        most popular hashe
+        most popular hashes
         1.
         2.
         3.
@@ -56,15 +60,15 @@ class Prettifier:
             self.pretty_print_one(i, multi_print)
 
     def pretty_print_one(self, objs: List, multi_print: bool):
-        out = f"\n[bold #011627 on #ff9f1c]{objs.chash}[/bold #011627 on #ff9f1c]\n"
+        out = f"\n[bold magenta]{objs.chash}[/bold magenta]\n"
 
-        # It didn't find any hahses.
+        # It didn't find any hashes.
         if len(objs.prototypes) == 0:
-            out += "[bold #2ec4b6]No hashes found.[/bold #2ec4b6]"
+            out += "[bold #FF0000]No hashes found.[/bold #FF0000]"
             console.print(out)
             return out
 
-        out += "\n[bold underline #2ec4b6]Most Likely[/bold underline #2ec4b6] \n"
+        out += "\n[bold underline #5f5fff]Most Likely[/bold underline #5f5fff] \n"
         start = objs.prototypes[0:4]
         rest = objs.prototypes[4:]
 
@@ -78,7 +82,7 @@ class Prettifier:
 
         # return if accessible is on
         if not self.a11y:
-            out += "\n[bold underline #2ec4b6]Least Likely[/bold underline #2ec4b6]\n"
+            out += "\n[bold underline #5f5fff]Least Likely[/bold underline #5f5fff]\n"
 
             for i in rest:
                 out += self.turn_named_tuple_pretty_print(i) + " "
@@ -88,7 +92,7 @@ class Prettifier:
 
     def turn_named_tuple_pretty_print(self, nt: NamedTuple):
         # This colours red
-        out = f"[bold #e71d36]{nt['name']}[/bold #e71d36], "
+        out = f"[bold #ff5f00]{nt['name']}[/bold #ff5f00], "
 
         hc = nt["hashcat"]
         john = nt["john"]
@@ -96,17 +100,17 @@ class Prettifier:
 
         if not self.hashcat:
             if hc is not None and john:
-                out += f"Hashcat Mode: {hc}, "
+                out += f"HC: {hc} "
             elif hc is not None:
-                out += f"Hashcat Mode: {hc}."
-        
+                out += f"HC: {hc} "
+
         if not self.john:
             if john is not None and des:
-                out += f"John Name: {john}, "
+                out += f"JtR: {john} "
             elif john is not None:
-                out += f"John Name: {john}."
+                out += f"JtR: {john}"
         if des:
             # Orange
-            out += f"[#ff9f1c]Summary: {des}[/#ff9f1c]"
+            out += f"[#8787D7]Summary: {des}[/#8787D7]"
 
         return out

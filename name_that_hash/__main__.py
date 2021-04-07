@@ -25,6 +25,6 @@ if __name__ == "__main__":
         )
         sys.exit(1)
 
-    import runner
+    from name_that_hash import runner
 
     runner.main()

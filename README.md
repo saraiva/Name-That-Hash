@@ -1,18 +1,17 @@
 <p align="center">
 
 <img src="logo.gif">
-<p align="center">➡️ <a href="https://discord.gg/zYTM3rZM4T">Discord</a> | <a href="https://nth.skerritt.blog">Website</a> ⬅️</p>
+<p align="center">➡️ <a href="http://discord.skerritt.blog">Discord</a> | <a href="https://nth.skerritt.blog">Website</a> ⬅️</p>
 <p align="center">The Modern Hash Identification System<br>
 <code>pip3 install name-that-hash && nth</code>
   <br>
   <a href="https://nth.skerritt.blog">Web App with no install needed</a>
 </p>
 
-<p align="center"><img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/name-that-hash"> <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/name-that-hash"> <img alt="PyPI" src="https://img.shields.io/pypi/v/name-that-hash"> <img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/bee_sec_san?style=social">
+<p align="center">
+  <img alt="Discord" src="https://img.shields.io/discord/754001738184392704"> <img alt="PyPI - Downloads" src="https://pepy.tech/badge/name-that-hash/month">  <img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/bee_sec_san?style=social"> <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/name-that-hash"> <img alt="PyPI" src="https://img.shields.io/pypi/v/name-that-hash">
 </p>
-
 <hr>
-
 
 # 🤔 What is this?
 
@@ -59,7 +58,7 @@ Name-That-Hash is an [accessible hacking tool](https://skerritt.blog/a11y/). Tha
 
 ![No long text or ascii art here](images/accessible.png)
 
-Removing the ASCII Art of very long "least likely" text blocks using `-accessible`.
+Removing the ASCII Art of very long "least likely" text blocks using `--accessible`.
 
 Doing this means you don't get access to least likely, and if the hash is in that pile it'd suck. So we also have `--no-banner`.
 
@@ -91,6 +90,12 @@ nth
 
 To use.
 
+[![Packaging status](https://repology.org/badge/vertical-allrepos/name-that-hash.svg)](https://repology.org/project/name-that-hash/versions)
+
+We're also in:
+* [REMnux](https://remnux.org/).
+* The Arch User Repository.
+
 # 💡 Documentation
 Want to learn how popularity works?
 
@@ -114,7 +119,7 @@ You can read more about [contributing here](https://github.com/HashPals/Name-Tha
 
 Many thanks to [Jabba](https://github.com/JabbaTheBunny) & Jayyy for their help :)
 
-Thanks to HashID and Hash-Identifier for their work in this field, which heavily inspired this. 💝 The database of hashes was originally taken from them, but we've significantly modified it. Thank you so much for creating that database of 3000+ hashes 😻
+Thanks to [HashID](https://github.com/psypanda/hashID) and [Hash-Identifier](https://code.google.com/archive/p/hash-identifier/) for their work in this field, which heavily inspired this. 💝 The database of hashes was originally taken from them, but we've significantly modified it. Thank you so much for creating that database of 3000+ hashes 😻
 
 Thanks to the TryHackMe Community too, and especially [Oriel](https://twitter.com/OrielOrielOriel) for her feedback on early versions.
 
@@ -128,3 +133,28 @@ Finally, thanks too Blackout for helping write descriptions of hashes 🐱‍�
 ![FalconSpy loves it!](images/falconspy.png)
 
 [We're in REMnux!](https://twitter.com/REMnux/status/1355874578405466114)
+
+## Contributors ✨
+
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/digitalsleuth"><img src="https://avatars.githubusercontent.com/u/62841822?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Digital Sleuth</b></sub></a><br /><a href="https://github.com/HashPals/Name-That-Hash/commits?author=digitalsleuth" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/amadejpapez"><img src="https://avatars.githubusercontent.com/u/63184600?v=4?s=100" width="100px;" alt=""/><br /><sub><b>amadejpapez</b></sub></a><br /><a href="https://github.com/HashPals/Name-That-Hash/issues?q=author%3Aamadejpapez" title="Bug reports">🐛</a> <a href="https://github.com/HashPals/Name-That-Hash/commits?author=amadejpapez" title="Code">💻</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

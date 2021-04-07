@@ -1,81 +1,17 @@
 import click
 import sys
 from typing import NamedTuple, List
+import base64
 
 from rich import print, text
 from loguru import logger
 
-logger.add(
-    sys.stderr, format="{time} {level} {message}", filter="my_module", level="INFO"
-)
+from name_that_hash import hash_namer, hashes, prettifier
 
+from name_that_hash import check_hashes
 
 # Lets you import as an API
 # or run as a package
-try:
-    import hashes, hash_namer, prettifier
-except ModuleNotFoundError:
-    from name_that_hash import hash_namer, hashes, prettifier
-
-
-class HashObj:
-    """
-    Every hash given to our program will be assiocated with one object
-    This object contains the possible type of hash
-    and provides ways to print that hash
-    """
-
-    def __init__(self, chash: str, nth, hash_info):
-        self.chash = chash
-        self.nth = nth
-
-        self.popular = hash_info.popular
-
-        # prorotypes is given as a generator
-        self.prototypes = nth.identify(chash)
-        self.prototypes = self.sort_by_popular()
-
-        self.hash_obj = {self.chash: self.prototypes}
-
-    def get_prototypes(self):
-        return self.prototypes
-
-    def sort_by_popular(self):
-        """Sorts the list by popular + everything else
-
-        we do this using the self.popular set. Sets have O(1) lookup, so it's cheap.
-        If on named_tuple is in the popular set, we add it to the populars list and remove it from prototypes.
-
-        we then return populars list + prototypes.
-        """
-
-        to_ret = []
-        populars = []
-        for i in self.prototypes:
-            if i.name in self.popular:
-                populars.append(i.__dict__)
-            else:
-                to_ret.append(i.__dict__)
-        return populars + to_ret
-
-
-class hash_information:
-    def __init__(self):
-        self.popular = set(
-            [
-                "MD5",
-                "MD4",
-                "NTLM",
-                "SHA-256",
-                "SHA-515",
-                "Keccak-256",
-                "Keccak-512",
-                "Blake2",
-                "bcrypt",
-                "SHA-1",
-                "HMAC-SHA1 (key = $salt)",
-            ]
-        )
 
 
 def print_help(ctx):
@@ -90,7 +26,8 @@ def banner():
  |  \| | __ _ _ __ ___   ___ ______| | | |__   __ _| |_ ______| |_| | __ _ ___| |__  
  | . ` |/ _` | '_ ` _ \ / _ \______| | | '_ \ / _` | __|______|  _  |/ _` / __| '_ \ 
  | |\  | (_| | | | | | |  __/      | | | | | | (_| | |_       | | | | (_| \__ \ | | |
-  \_| \_/\__,_|_| |_| |_|\___|     \_/ |_| |_|\__,_|\__|      \_| |_/\__,_|___/_| |_|
+ \_| \_/\__,_|_| |_| |_|\___|      \_/ |_| |_|\__,_|\__|      \_| |_/\__,_|___/_| |_|
+
 https://twitter.com/bee_sec_san
 https://github.com/HashPals/Name-That-Hash [/bold blue]
     """
@@ -98,9 +35,17 @@ https://github.com/HashPals/Name-That-Hash [/bold blue]
 
 
 @click.command()
-@click.option("-t", "--text", help="Check one hash", type=str)
 @click.option(
-    "-f", "--file", type=click.File("rb"), help="Newline separated hash file input"
+    "-t",
+    "--text",
+    help="Check one hash, use single quotes ' as inverted commas \" messes up on Linux.",
+    type=str,
+)
+@click.option(
+    "-f",
+    "--file",
+    type=click.File("r", encoding="utf-8"),
+    help="Checks every hash in a newline separated file.",
 )
 @click.option(
     "-g",
@@ -110,10 +55,16 @@ https://github.com/HashPals/Name-That-Hash [/bold blue]
     help="Are you going to grep this output? Prints in JSON format.",
 )
 @click.option(
+    "-b64",
+    "--base64",
+    is_flag=True,
+    help="Decodes hashes in Base64 before identification. For files with mixed Base64 & non-encoded it attempts base64 first and then falls back to normal hash identification per hash.",
+)
+@click.option(
     "-a",
     "--accessible",
     is_flag=True,
-    help="Turn on accessible mode, does not print ASCII art. Also dooes not print very large blocks of text, as this can cause some pains with screenreaders. This reduces the information you get. If you want the least likely feature but no banner, use --no-banner. ",
+    help="Turn on accessible mode, does not print ASCII art. Also does not print very large blocks of text, as this can cause some pains with screenreaders. This reduces the information you get. If you want the least likely feature but no banner, use --no-banner. ",
 )
 @click.option("--no-banner", is_flag=True, help="Removes banner from startup.")
 @click.option(
@@ -140,7 +91,7 @@ def main(**kwargs):
         nth --text '5f4dcc3b5aa765d61d8327deb882cf99'\n
         nth --file hash\n
         nth --text '5f4dcc3b5aa765d61d8327deb882cf99' --greppable\n
-        Note: Use single quotes ' as double quotes " do not work well on Linux.\n
+        Note: Use single quotes ' as inverted commas " do not work well on Linux.\n
     """
     no_args = True
     for i in kwargs.values():
@@ -161,27 +112,23 @@ def main(**kwargs):
         logger.info("Running the banner.")
         banner()
 
-    hash_info = hash_information()
     # nth = the object which names the hash types
     nth = hash_namer.Name_That_Hash(hashes.prototypes)
     # prettifier print things :)
     pretty_printer = prettifier.Prettifier(kwargs)
+
+    hashChecker = check_hashes.HashChecker(kwargs, nth)
 
     logger.trace("Initialised the hash_info, nth, and pretty_printer objects.")
 
     output = []
 
     if kwargs["text"]:
-        output.append(HashObj(kwargs["text"], nth, hash_info))
+        hashChecker.single_hash(kwargs["text"])
+        output = hashChecker.output
     elif kwargs["file"]:
-        logger.trace("performing file opening")
-        # else it must be a file
-        for i in kwargs["file"].read().splitlines():
-            logger.trace(i)
-            # for every hash in the file, put it into the output list
-            # we have to decode it as its bytes str
-            output.append(HashObj(i.decode("utf-8"), nth, hash_info))
-            logger.trace(output + "\n")
+        hashChecker.file_input(kwargs["file"])
+        output = hashChecker.output
 
     if kwargs["greppable"]:
         print(pretty_printer.greppable_output(output))
@@ -190,21 +137,13 @@ def main(**kwargs):
 
 
 def set_logger(kwargs):
-    # sets the logger value based on args
-    verbosity = kwargs["verbose"]
-    if not verbosity:
+    try:
+        logger_dict = {1: "WARNING", 2: "DEBUG", 3: "TRACE"}
+        level = logger_dict[kwargs["verbose"]]
+        logger.add(sink=sys.stderr, level=level, colorize=sys.stderr.isatty())
+        logger.opt(colors=True)
+    except Exception as e:
         logger.remove()
-        return
-    elif verbosity == 1:
-        verbosity = "WARNING"
-    elif verbosity == 2:
-        verbosity = "DEBUG"
-    elif verbosity == 3:
-        verbosity = "TRACE"
-    logger.add(sink=sys.stderr, level=verbosity, colorize=sys.stderr.isatty())
-    logger.opt(colors=True)
-
-    logger.debug(f"Verbosity set to level {verbosity} ({verbosity})")
 
 
 def api_return_hashes_as_json(chash: [str], args: dict = {}):
@@ -214,19 +153,29 @@ def api_return_hashes_as_json(chash: [str], args: dict = {}):
     Given a list of hashes of strings
     return a list of json of all hashes in the same order as the input
     """
-    logger.remove()
+    pretty_printer = prettifier.Prettifier(args, api=True)
+    return pretty_printer.greppable_output(compute_hashes_for_api(chash, args))
+
+
+def api_return_hashes_as_dict(chash: [str], args: dict = {}):
+    """
+    Returns the hashes as a Python dictionary
+    """
+    pretty_printer = prettifier.Prettifier(args, api=True)
+    return pretty_printer.turn_hash_objs_into_dict(compute_hashes_for_api(chash, args))
+
+
+def compute_hashes_for_api(chash: [str], args: dict = {}):
     # nth = the object which names the hash types
+
     nth = hash_namer.Name_That_Hash(hashes.prototypes)
     # prettifier print things :)
     pretty_printer = prettifier.Prettifier(args, api=True)
-    # for most popular hashes etc
-    hash_info = hash_information()
+    hashChecker = check_hashes.HashChecker(args, nth)
 
-    output = []
     for i in chash:
-        output.append(HashObj(i, nth, hash_info))
-
-    return pretty_printer.greppable_output(output)
+        hashChecker.single_hash(i)
+    return hashChecker.output
 
 
 if __name__ == "__main__":

@@ -47,7 +47,7 @@ prototypes = [
     ),
     Prototype(
         regex=re.compile(r"^(\$crc32\$[a-f0-9]{8}.)?[a-f0-9]{8}$", re.IGNORECASE),
-        modes=[HashInfo(name="CRC-32", hashcat=None, john="crc32", extended=False)],
+        modes=[HashInfo(name="CRC-32", hashcat=11500, john="crc32", extended=False)],
     ),
     Prototype(
         regex=re.compile(r"^\+[a-z0-9\/.]{12}$", re.IGNORECASE),
@@ -141,7 +141,7 @@ prototypes = [
                 name="md5(md5(md5($pass)))", hashcat=3500, john=None, extended=True
             ),
             HashInfo(
-                name="md5(strtoupper(md5($pass)))",
+                name="md5(uppercase(md5($pass)))",
                 hashcat=4300,
                 john=None,
                 extended=True,
@@ -199,6 +199,28 @@ prototypes = [
             ),
             HashInfo(
                 name="md5($username.0.$pass)", hashcat=4210, john=None, extended=True
+            ),
+            HashInfo(
+                name="md5(utf16($pass))", hashcat=None, john="dynamic_29", extended=True
+            ),
+            HashInfo(
+                name="md4($salt.$pass)", hashcat=None, john="dynamic_31", extended=True
+            ),
+            HashInfo(
+                name="md4($pass.$salt)", hashcat=None, john="dynamic_32", extended=True
+            ),
+            HashInfo(
+                name="md4(utf16($pass))", hashcat=None, john="dynamic_33", extended=True
+            ),
+            HashInfo(
+                name="md5(md4($pass))", hashcat=None, john="dynamic_34", extended=True
+            ),
+            HashInfo(name="net-md5", hashcat=None, john="dynamic_39", extended=True),
+            HashInfo(
+                name="md5($salt.pad16($pass))",
+                hashcat=None,
+                john="dynamic_39",
+                extended=True,
             ),
         ],
     ),
@@ -503,7 +525,11 @@ prototypes = [
         regex=re.compile(r"^(\$2[axy]|\$2)\$[0-9]{2}\$[a-z0-9\/.]{53}$", re.IGNORECASE),
         modes=[
             HashInfo(
-                name="Blowfish(OpenBSD)", hashcat=3200, john="bcrypt", extended=False
+                name="Blowfish(OpenBSD)",
+                hashcat=3200,
+                john="bcrypt",
+                extended=False,
+                description="Can be used in Linux Shadow Files.",
             ),
             HashInfo(
                 name="Woltlab Burning Board 4.x",
@@ -563,7 +589,7 @@ prototypes = [
                 hashcat=1400,
                 john="raw-sha256",
                 extended=False,
-                description="256-bit key and is a good partner-function for AES",
+                description="256-bit key and is a good partner-function for AES. Can be used in Shadow files.",
             ),
             HashInfo(name="RIPEMD-256", hashcat=None, john=None, extended=False),
             HashInfo(
@@ -714,7 +740,7 @@ prototypes = [
                 hashcat=1700,
                 john="raw-sha512",
                 extended=False,
-                description="Used in Bitcoin Blockchain.",
+                description="Used in Bitcoin Blockchain and Shadow Files.",
             ),
             HashInfo(name="Keccak-512", hashcat=1800, john=None, extended=False),
             HashInfo(name="Whirlpool", hashcat=6100, john="whirlpool", extended=False),
@@ -948,7 +974,7 @@ prototypes = [
     ),
     Prototype(
         regex=re.compile(
-            r"^\$(krb5pa|mskrb5)\$([0-9]{2})?\$.+\$[a-f0-9]{1,}$", re.IGNORECASE
+            r"^\$(krb5pa|mskrb5)\$(23)?\$.+\$[a-f0-9]{1,}$", re.IGNORECASE
         ),
         modes=[
             HashInfo(
@@ -1288,7 +1314,15 @@ prototypes = [
         regex=re.compile(
             r"^SCRYPT:[0-9]{1,}:[0-9]{1}:[0-9]{1}:[a-z0-9:\/+=]{1,}$", re.IGNORECASE
         ),
-        modes=[HashInfo(name="scrypt", hashcat=8900, john=None, extended=False)],
+        modes=[
+            HashInfo(
+                name="scrypt",
+                hashcat=8900,
+                john=None,
+                extended=False,
+                description="Used in Dogecoin and Litecoin.",
+            )
+        ],
     ),
     Prototype(
         regex=re.compile(r"^\$8\$[a-z0-9\/.]{14}\$[a-z0-9\/.]{43}$", re.IGNORECASE),
@@ -1347,6 +1381,21 @@ prototypes = [
             HashInfo(
                 name=u"Android FDE ≤ 4.3", hashcat=8800, john="fde", extended=False
             )
+        ],
+    ),
+    Prototype(
+        regex=re.compile(
+            r"\$krb5tgs\$23\$\*[^*]*\*\$[a-f0-9]{32}\$[a-f0-9]{64,40960}",
+            re.IGNORECASE,
+        ),
+        modes=[
+            HashInfo(
+                name=u"Kerberos 5 TGS-REP etype 23",
+                hashcat=13100,
+                john="krb5tgs",
+                extended=False,
+                description="Used in Windows Active Directory.",
+            ),
         ],
     ),
     Prototype(
@@ -1517,6 +1566,166 @@ prototypes = [
                 hashcat=10500,
                 john="pdf",
                 extended=False,
+            )
+        ],
+    ),
+    Prototype(
+        regex=re.compile(r"^\$krb5asrep\$23\$[^:]+:[a-f0-9]{32,32}\$[a-f0-9]{64,40960}$", re.IGNORECASE),
+        modes=[
+            HashInfo(
+                name="Kerberos 5 AS-REP etype 23",
+                hashcat=18200,
+                john="krb5pa-sha1",
+                extended=False,
+                description="Used for Windows Active Directory"
+                )
+        ],
+    ),
+    Prototype(
+        regex=re.compile(r"^\$krb5tgs\$17\$[^$]{1,512}\$[^$]{1,512}\$[^$]{1,4}?\$?[a-f0-9]{1,32}\$[a-f0-9]{64,40960}$", re.IGNORECASE),
+        modes=[
+            HashInfo(
+                name="Kerberos 5 TGS-REP etype 17 (AES128-CTS-HMAC-SHA1-96)",
+                hashcat=19600,
+                john=None,
+                extended=False,
+                description="Used for Windows Active Directory"
+                )
+        ],
+    ),
+    Prototype(
+        regex=re.compile(r"^\$krb5tgs\$18\$[^$]{1,512}\$[^$]{1,512}\$[^$]{1,4}?\$?[a-f0-9]{1,32}\$[a-f0-9]{64,40960}", re.IGNORECASE),
+        modes=[
+            HashInfo(
+                name="Kerberos 5 TGS-REP etype 18 (AES256-CTS-HMAC-SHA1-96)",
+                hashcat=19700,
+                john=None,
+                extended=False,
+                description="Used for Windows Active Directory"
+                )
+        ],
+    ),
+    Prototype(
+        regex=re.compile(r"^\$krb5pa\$17\$[^$]{1,512}\$[^$]{1,512}\$[a-f0-9]{104,112}$", re.IGNORECASE),
+        modes=[
+            HashInfo(
+                name="Kerberos 5, etype 17, Pre-Auth",
+                hashcat=19800,
+                john=None,
+                extended=False,
+                description="Used for Windows Active Directory"
+                )
+        ],
+    ),
+    Prototype(
+        regex=re.compile(r"^\$krb5pa\$17\$[^$]{1,512}\$[^$]{1,512}\$[^$]{0,512}\$[a-f0-9]{104,112}$", re.IGNORECASE),
+        modes=[
+            HashInfo(
+                name="Kerberos 5, etype 17, Pre-Auth (with salt)",
+                hashcat=None,
+                john="krb5pa-sha1",
+                extended=False,
+                description="Used for Windows Active Directory"
+                )
+        ],
+    ),
+    Prototype(
+        regex=re.compile(r"^\$krb5pa\$18\$[^$]{1,512}\$[^$]{1,512}\$[^$]{0,512}\$[a-f0-9]{104,112}$", re.IGNORECASE),
+        modes=[
+            HashInfo(
+                name="Kerberos 5, etype 18, Pre-Auth (with salt)",
+                hashcat=None,
+                john="krb5pa-sha1",
+                extended=False,
+                description="Used for Windows Active Directory"
+                )
+        ],
+    ),
+    Prototype(
+        regex=re.compile(r"^\$krb5pa\$18\$[^$]{1,512}\$[^$]{1,512}\$[a-f0-9]{104,112}$", re.IGNORECASE),
+        modes=[
+            HashInfo(
+                name="Kerberos 5, etype 18, Pre-Auth",
+                hashcat=19900,
+                john=None,
+                extended=False,
+                description="Used for Windows Active Directory"
+                )
+        ],
+    ),
+    Prototype(
+    regex=re.compile(r"\$bitcoin\$[0-9]{2,4}\$[a-fA-F0-9$]{250,350}", re.IGNORECASE),
+    modes=[
+        HashInfo(
+            name="Bitcoin / Litecoin",
+            hashcat=11300,
+            john="bitcoin",
+            extended=False,
+            description="Use Bitcoin2John.py to extract the hash for cracking."
+            )
+        ],
+    ),
+    Prototype(
+    regex=re.compile(r"\$ethereum\$[a-z0-9*]{150,250}", re.IGNORECASE),
+    modes=[
+        HashInfo(
+            name="Ethereum Wallet, PBKDF2-HMAC-SHA256",
+            hashcat=15600,
+            john="ethereum-opencl",
+            extended=False,
+            description="Use ethereum2john.py to crack."
+            ),
+        HashInfo(
+            name="Ethereum Pre-Sale Wallet, PBKDF2-HMAC-SHA256",
+            hashcat=16300,
+            john="ethereum-presale-opencl",
+            extended=False,
+            description="Use ethereum2john.py to crack."
+        )
+        ],
+    ),
+    Prototype(
+    regex=re.compile(r"\$monero\$(0)\*[a-f0-9]{32,3196}", re.IGNORECASE),
+    modes=[
+        HashInfo(
+            name="Monero",
+            hashcat=None,
+            john="monero",
+            extended=False,
+            description="Use monero2john.py to crack."
+            )
+        ],
+    ),
+    Prototype(
+        regex=re.compile(r"^\$electrum\$[1-3]\*[a-f0-9]{32,32}\*[a-f0-9]{32,32}$", re.IGNORECASE),
+        modes=[
+        HashInfo(
+            name="Electrum Wallet (Salt-Type 1-3)",
+            hashcat=16600,
+            john="electrum",
+            extended=False,
+            )
+        ],
+    ),
+    Prototype(
+        regex=re.compile(r"^\$electrum\$4\*[a-f0-9]{1,66}\*[a-f0-9]{128,32768}\*[a-f0-9]{64,64}$", re.IGNORECASE),
+        modes=[
+        HashInfo(
+            name="Electrum Wallet (Salt-Type 4)",
+            hashcat=21700,
+            john="electrum",
+            extended=False,
+            )
+        ],
+    ),
+    Prototype(
+        regex=re.compile(r"^\$electrum\$5\*[a-f0-9]{66,66}\*[a-f0-9]{2048,2048}\*[a-f0-9]{64,64}$", re.IGNORECASE),
+        modes=[
+        HashInfo(
+            name="Electrum Wallet (Salt-Type 5)",
+            hashcat=21800,
+            john="electrum",
+            extended=False,
             )
         ],
     ),
