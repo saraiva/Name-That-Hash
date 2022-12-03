@@ -23,6 +23,37 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "SkeletalDemise",
+      "name": "SkeletalDemise",
+      "avatar_url": "https://avatars.githubusercontent.com/u/29117662?v=4",
+      "profile": "https://github.com/SkeletalDemise",
+      "contributions": [
+        "code",
+        "maintenance",
+        "ideas"
+      ]
+    },
+    {
+      "login": "bee-san",
+      "name": "Brandon",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10378052?v=4",
+      "profile": "https://skerritt.blog",
+      "contributions": [
+        "code",
+        "maintenance",
+        "ideas"
+      ]
+    },
+    {
+      "login": "swanandx",
+      "name": "Swanand Mulay",
+      "avatar_url": "https://avatars.githubusercontent.com/u/73115739?v=4",
+      "profile": "http://swanandx.github.io",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

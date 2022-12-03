@@ -94,7 +94,16 @@ To use.
 
 We're also in:
 * [REMnux](https://remnux.org/).
-* The Arch User Repository.
+* [The Arch User Repository (AUR)](https://aur.archlinux.org/packages/python-name-that-hash).
+* [MacPorts](https://ports.macports.org/port/name-that-hash/summary).
+* [Homebrew](https://formulae.brew.sh/formula/name-that-hash).
+
+# ⚱ Fun Facts
+
+* We have a test-matrix which makes sure all of our hashes are up-to-date, including the HashCat mode and John the Ripper modes!
+* Unlike other hash identifiers which identify non-hashes, we have removed these so you'll only get real hashes (base64 who?)
+* Each and every hash is tested multiple times, for both false positives and true positives. No mistakes here!
+* There is a magical lamp that summons a genie somewhere in the source code.
 
 # 💡 Documentation
 Want to learn how popularity works?
@@ -137,7 +146,7 @@ Finally, thanks too Blackout for helping write descriptions of hashes 🐱‍�
 ## Contributors ✨
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -149,6 +158,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://github.com/digitalsleuth"><img src="https://avatars.githubusercontent.com/u/62841822?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Digital Sleuth</b></sub></a><br /><a href="https://github.com/HashPals/Name-That-Hash/commits?author=digitalsleuth" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/amadejpapez"><img src="https://avatars.githubusercontent.com/u/63184600?v=4?s=100" width="100px;" alt=""/><br /><sub><b>amadejpapez</b></sub></a><br /><a href="https://github.com/HashPals/Name-That-Hash/issues?q=author%3Aamadejpapez" title="Bug reports">🐛</a> <a href="https://github.com/HashPals/Name-That-Hash/commits?author=amadejpapez" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/SkeletalDemise"><img src="https://avatars.githubusercontent.com/u/29117662?v=4?s=100" width="100px;" alt=""/><br /><sub><b>SkeletalDemise</b></sub></a><br /><a href="https://github.com/HashPals/Name-That-Hash/commits?author=SkeletalDemise" title="Code">💻</a> <a href="#maintenance-SkeletalDemise" title="Maintenance">🚧</a> <a href="#ideas-SkeletalDemise" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://skerritt.blog"><img src="https://avatars.githubusercontent.com/u/10378052?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Brandon</b></sub></a><br /><a href="https://github.com/HashPals/Name-That-Hash/commits?author=bee-san" title="Code">💻</a> <a href="#maintenance-bee-san" title="Maintenance">🚧</a> <a href="#ideas-bee-san" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="http://swanandx.github.io"><img src="https://avatars.githubusercontent.com/u/73115739?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Swanand Mulay</b></sub></a><br /><a href="https://github.com/HashPals/Name-That-Hash/commits?author=swanandx" title="Code">💻</a></td>
   </tr>
 </table>
 

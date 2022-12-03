@@ -1,11 +1,14 @@
 import json
+import logging
 from typing import NamedTuple, List
+
 from rich.console import Console
-from loguru import logger
+
+from name_that_hash import hash_info
+
 
 # we need a global console to control highlighting / printing
 console = Console(highlighter=False)
-
 
 class Prettifier:
     """
@@ -20,10 +23,15 @@ class Prettifier:
             self.a11y = kwargs["accessible"]
             self.john = kwargs["no_john"]
             self.hashcat = kwargs["no_hashcat"]
+        self.args = kwargs
+        self.hashinfo_obj = hash_info.HashInformation()
+
+        if not "popular_only" in self.args:
+            self.args["popular_only"] = False
 
     def greppable_output(self, objs: List):
-        logger.debug("Greppable output")
-        logger.debug(f"Objects is {objs}")
+        logging.debug("Greppable output")
+
         """
         takes the prototypes and turns it into json
         returns the json
@@ -33,16 +41,27 @@ class Prettifier:
         return json.dumps(self.turn_hash_objs_into_dict(objs), indent=2)
 
     def turn_hash_objs_into_dict(self, objs: List):
-        print(f"objs is {objs}")
         outputs_as_dict = {}
 
         for y in objs:
             outputs_as_dict.update(y.hash_obj)
-            logger.debug(f"Output_as_dicts is now {outputs_as_dict}")
+            logging.debug(f"Output_as_dicts is now {outputs_as_dict}")
+
+        if self.args["popular_only"]:
+            return self.get_popular_only(outputs_as_dict)
         return outputs_as_dict
 
+    def get_popular_only(self, outputs_as_dict):
+        popular_only = {}
+        for hash in list(outputs_as_dict.keys()):
+            popular_only[hash] = []
+            for hash_type in outputs_as_dict[hash]:
+                if hash_type["name"] in self.hashinfo_obj.popular:
+                    popular_only[hash].append(hash_type)
+        return popular_only
+
     def pretty_print(self, objs):
-        logger.trace("In pretty printing")
+        logging.debug("In pretty printing")
         """
         prints it prettily in the format:
         most popular hashes
@@ -54,12 +73,11 @@ class Prettifier:
 
         then everything else on one line.
         """
-        multi_print = True if len(objs) > 1 else False
         for i in objs:
-            logger.trace(i)
-            self.pretty_print_one(i, multi_print)
+            logging.debug(i)
+            self.pretty_print_one(i)
 
-    def pretty_print_one(self, objs: List, multi_print: bool):
+    def pretty_print_one(self, objs: List):
         out = f"\n[bold magenta]{objs.chash}[/bold magenta]\n"
 
         # It didn't find any hashes.
@@ -91,7 +109,7 @@ class Prettifier:
         return out
 
     def turn_named_tuple_pretty_print(self, nt: NamedTuple):
-        # This colours red
+        # This colour is red
         out = f"[bold #ff5f00]{nt['name']}[/bold #ff5f00], "
 
         hc = nt["hashcat"]

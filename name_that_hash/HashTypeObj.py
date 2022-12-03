@@ -1,18 +1,21 @@
 class HashType:
     """
-    Every hash given to our program will be assiocated with one object
+    Every hash given to our program will be associated with one object.
     This object contains the possible type of hash
-    and provides ways to print that hash
+    and provides ways to print that hash.
     """
 
-    def __init__(self, chash: str, nth, hash_info):
+    def __init__(self, chash: str, nth, hash_info, kwargs):
         self.chash = chash
         self.nth = nth
 
         self.popular = hash_info.popular
 
-        # prorotypes is given as a generator
-        self.prototypes = nth.identify(chash)
+        # prototypes is given as a generator
+        if "extreme" in kwargs and kwargs["extreme"]:
+            self.prototypes = nth.identify_all(chash)
+        else:
+            self.prototypes = nth.identify(chash)
         self.prototypes = self.sort_by_popular()
 
         self.hash_obj = {self.chash: self.prototypes}
@@ -21,12 +24,13 @@ class HashType:
         return self.prototypes
 
     def sort_by_popular(self):
-        """Sorts the list by popular + everything else
+        """
+        Sorts the list by popular + everything else.
 
-        we do this using the self.popular set. Sets have O(1) lookup, so it's cheap.
-        If on named_tuple is in the popular set, we add it to the populars list and remove it from prototypes.
+        We do this using the self.popular set. Sets have O(1) lookup, so it's cheap.
+        If one named_tuple is in the popular set, we add it to the populars list and remove it from prototypes.
 
-        we then return populars list + prototypes.
+        We then return populars list + prototypes.
         """
 
         to_ret = []
